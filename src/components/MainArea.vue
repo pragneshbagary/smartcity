@@ -53,7 +53,7 @@
  <template>
     <div class="main-area">
       <!-- Dynamic Component based on selected tab -->
-      <component :is="currentComponent"></component>
+      <component :is="currentComponent" v-bind="$attrs"></component>
     </div>
   </template>
   

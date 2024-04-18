@@ -36,6 +36,7 @@
     watch: {
       traffic(newVal) {
         this.$emit('toggle-traffic', newVal);
+        // console.log(newVal)
       },
       cctv(newVal) {
         this.$emit('toggle-cctv', newVal);
@@ -54,7 +55,7 @@
     padding: 20px;
     border-left: 1px solid #ddd;
     background-color: #f8f9fa;
-    height: 100vh;
+    /* height: 100vh; */
   }
   
   .toggle {

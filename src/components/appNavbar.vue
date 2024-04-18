@@ -22,7 +22,7 @@
   <style scoped>
   .app-navbar {
     width: 250px;
-    height: 100vh; /* Full height */
+    /* height: 100vh; */
     background-color: #2c3e50; /* Dark slate blue background */
     color: white;
     display: flex;

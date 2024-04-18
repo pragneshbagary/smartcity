@@ -1,10 +1,10 @@
 <template>
   <div id="app">
-    <TopBar />
-    <div class="main-content">
+    <TopBar ref="topBar" />
+    <div class="main-content" :style="mainContentStyle">
         <appNavbar @option-selected="changeTab"/>
-        <MainArea :activeTab="activeTab"/>
-        <RightPanel />
+        <MainArea :traffic="showTrafficValue" :showCameras="showCamerasValue" :activeTab="activeTab"/>
+        <RightPanel @toggle-traffic="toggleTraffic" @toggle-cctv="toggleCCTV"/>
     </div>
   </div>
 </template>
@@ -25,12 +25,34 @@ export default {
   },
   data() {
     return {
-      activeTab: 'traffic' // Default tab
+      activeTab: 'traffic', // Default tab
+      headerHeight: 0, // Initialize header height
+      showTrafficValue: false,
+      showCamerasValue: false,
     }
+  },
+  computed: {
+    mainContentStyle() {
+      const height = `calc(100vh - ${this.headerHeight}px)`;
+      return { height };
+    }
+  },
+  mounted() {
+    // Use the $nextTick method to ensure the DOM is updated
+    this.$nextTick(() => {
+      // Get the height of the header
+      this.headerHeight = this.$refs.topBar.$el.offsetHeight;
+    });
   },
   methods: {
     changeTab(tab) {
       this.activeTab = tab;
+    },
+    toggleTraffic(newVal) {
+      this.showTrafficValue = newVal;
+    },
+    toggleCCTV(newVal) {
+      this.showCamerasValue = newVal;
     }
   }
 }
