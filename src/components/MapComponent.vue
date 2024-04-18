@@ -61,7 +61,7 @@ export default {
   methods: {
     loadMap() {
       const loader = new Loader({
-        apiKey: "AIzaSyAG1TuWwpo1qL8G7k8fhr8tvyRsjqMS4dY",
+        apiKey: process.env.VUE_APP_MAPS_API_URL,
         version: "weekly",
         // ...additionalOptions,
       });
