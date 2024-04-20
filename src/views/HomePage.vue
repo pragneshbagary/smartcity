@@ -4,7 +4,7 @@
     <div class="main-content" :style="mainContentStyle">
         <appNavbar @option-selected="changeTab"/>
         <MainArea :traffic="showTrafficValue" :showCameras="showCamerasValue" :activeTab="activeTab"/>
-        <RightPanel @toggle-traffic="toggleTraffic" @toggle-cctv="toggleCCTV"/>
+        <RightPanel :activeTab="activeTab" @toggle-traffic="toggleTraffic" @toggle-cctv="toggleCCTV"/>
     </div>
   </div>
 </template>

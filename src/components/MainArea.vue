@@ -75,9 +75,9 @@
           case 'traffic':
             return 'MapComponent';
           case 'cctv':
-            return 'AnalyticsComponent';
+            return 'MapComponent';
           case 'drones':
-            return 'HelpComponent';
+            return 'MapComponent';
           default:
             return null;
         }
