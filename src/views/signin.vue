@@ -47,12 +47,12 @@ export default {
     methods: {
         handleSubmit() {
             // Here, implement your sign-in logic, e.g., validate input, make API call, etc.
-            console.log({
-                userType: this.userType,
-                username: this.username,
-                password: this.password,
-                adminId: this.userType === 'governmentAdmin' ? this.adminId : undefined,
-            });
+            // console.log({
+            //     userType: this.userType,
+            //     username: this.username,
+            //     password: this.password,
+            //     adminId: this.userType === 'governmentAdmin' ? this.adminId : undefined,
+            // });
             // Redirect or show a message based on the response
         },
     },

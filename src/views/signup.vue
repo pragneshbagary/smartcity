@@ -48,7 +48,7 @@
     methods: {
       handleSubmit() {
         // Placeholder for sign-up logic, e.g., validation and API call for registration
-        console.log('Form Submitted', this.username, this.password, this.userType, this.adminId);
+        // console.log('Form Submitted', this.username, this.password, this.userType, this.adminId);
         // Implement your sign-up logic here
       },
     },

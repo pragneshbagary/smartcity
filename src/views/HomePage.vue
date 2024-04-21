@@ -3,8 +3,8 @@
     <TopBar ref="topBar" />
     <div class="main-content" :style="mainContentStyle">
         <appNavbar @option-selected="changeTab"/>
-        <MainArea :traffic="showTrafficValue" :showCameras="showCamerasValue" :activeTab="activeTab"/>
-        <RightPanel :activeTab="activeTab" @toggle-traffic="toggleTraffic" @toggle-cctv="toggleCCTV"/>
+        <MainArea :traffic="showTrafficValue" :showCameras="showCamerasValue" :activeTab="activeTab" @emitChosenCoords="setChosenCoords"/>
+        <RightPanel :coords="currentChosenCoords" :activeTab="activeTab" @toggle-traffic="toggleTraffic" @toggle-cctv="toggleCCTV"/>
     </div>
   </div>
 </template>
@@ -29,6 +29,7 @@ export default {
       headerHeight: 0, // Initialize header height
       showTrafficValue: false,
       showCamerasValue: false,
+      currentChosenCoords: "",
     }
   },
   computed: {
@@ -53,6 +54,9 @@ export default {
     },
     toggleCCTV(newVal) {
       this.showCamerasValue = newVal;
+    },
+    setChosenCoords(val) {
+      this.currentChosenCoords = val;
     }
   }
 }

@@ -24,17 +24,50 @@
 			</div>
 		</div>
 		<div v-if="showAddCctvPanel" class="add-cctv-panel">
-			Add CCTV
+			<div>
+				Click on the map to choose a point to add new cameras.
+			</div>
+			<div class="d-flex column">
+				<div>
+					<div>
+						Latitude
+					</div>
+					<input type="text" class="add-cctv" v-model="addCctv.lat">
+				</div>
+				<div>
+					<div>
+						Longitude
+					</div>
+					<input type="text" class="add-cctv" v-model="addCctv.lng">
+				</div>
+				<div>
+					<button @click="addCameras()">Add Camera</button>
+				</div>
+			</div>
 		</div>
 		<div v-if="showDronePanel" class="drone-panel">
-			Add Drones
+			Manage CCTVs
+			<div v-if="cameraLocations.length > 0">
+				<div v-for="(data, index) in cameraLocations" :key="index">
+					<div>
+						<div>
+							lat: {{ data.coords.lat }}
+							lng: {{ data.coords.lng }}
+						</div>
+						<div>
+							<button @click="deleteCamera(data)">Delete</button>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
 
 <script>
+import api from "@/services/api.service.js";
 export default {
-	props: ['activeTab'],
+	props: ['activeTab', 'coords'],
 	data() {
 		return {
 			traffic: false,
@@ -42,12 +75,17 @@ export default {
 			drones: false,
 			showCctvPanel: false,
 			showAddCctvPanel: false,
-			showDronePanel: false
+			showDronePanel: false,
+			addCctv: {
+				lat: "",
+				lng: ""
+			},
+			cameraLocations: ""
 		}
 	},
 	mounted() {
 		this.currentComponent();
-		console.log(this.activeTab)
+		this.getMarkers();
 	},
 	methods: {
 		currentComponent() {
@@ -65,6 +103,51 @@ export default {
 				this.showCctvPanel = false;
 				this.showAddCctvPanel = false;
 			}
+		},
+
+		getMarkers() {
+			api({
+				url: `/cameras`,
+				method: "get"
+			})
+				.then(response => {
+					const responseData = response.data;
+					console.log(responseData);
+					this.cameraLocations = responseData
+				})
+				.catch(e => console.log(e));
+		},
+
+		addCameras() {
+			const coords = {
+				lat: this.addCctv.lat,
+				lng: this.addCctv.lng
+			}
+			api({
+				url: `/cameras`,
+				method: "post",
+				data: {
+					"coords": coords,
+				}
+			})
+				.then(response => {
+					const responseData = response;
+					console.log(responseData);
+				})
+				.catch(e => console.log(e));
+		},
+
+		deleteCamera(data) {
+			api({
+				url: `/camera/${data.camera_id}`,
+				method: "delete",
+			})
+				.then(response => {
+					const responseData = response;
+					console.log(responseData);
+					this.getMarkers()
+				})
+				.catch(e => console.log(e));
 		}
 	},
 	watch: {
@@ -80,6 +163,10 @@ export default {
 		},
 		activeTab(newVal) {
 			this.currentComponent()
+			this.getMarkers();
+		},
+		coords(newVal) {
+			this.addCctv = newVal;
 		}
 	}
 }
@@ -93,6 +180,7 @@ export default {
 	border-left: 1px solid #ddd;
 	background-color: #f8f9fa;
 	/* height: 100vh; */
+	width: 8%;
 }
 
 .toggle {

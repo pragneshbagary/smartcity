@@ -11,6 +11,13 @@
   margin: 0;
   padding: 0;
 }
+
+.d-flex {
+  display: flex;
+}
+.column {
+  flex-direction: column;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

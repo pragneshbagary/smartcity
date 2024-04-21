@@ -7,7 +7,7 @@
 <script>
 import { Loader } from "@googlemaps/js-api-loader"
 import cameraImage from '../assets/cctv-camera.png';
-import {toRaw} from 'vue';
+import api from "@/services/api.service.js";
 
 export default {
 
@@ -21,6 +21,9 @@ export default {
       type: Boolean,
       default: false,
     },
+    activeTab: {
+      type: String
+    }
   },
   setup() {
     return {
@@ -32,13 +35,9 @@ export default {
       trafficLayer: '',
       cameraLayer: '',
       markerIconPath: cameraImage,
-
+      markers: [],
+      mapClickListener: null,
       cameraLocations: [
-        // {
-        //   lat: 37.335673,
-        //   lng: -121.886563,
-        //   url: "https://www.youtube.com/embed/live_stream_id_1",
-        // },
         {
           address: "215 Emily St, MountainView, CA",
           description: "Single family house with modern design",
@@ -57,8 +56,23 @@ export default {
   },
   mounted() {
     this.loadMap();
+    this.getMarkers();
   },
   methods: {
+
+    getMarkers() {
+      api({
+				url: `/cameras`,
+				method: "get"
+			})
+				.then(response => {
+					const responseData = response.data;
+          console.log(responseData);
+          this.cameraLocations = responseData
+				})
+				.catch(e => console.log(e));
+    },
+
     loadMap() {
       const loader = new Loader({
         apiKey: process.env.VUE_APP_MAPS_API_URL,
@@ -74,26 +88,29 @@ export default {
           zoom: 11,
           mapId: 'c81ce28bc5bf928c'
         });
-
-
-
-
-
-        if (this.showCameras) {
-          for (const property of this.cameraLocations) {
-            const AdvancedMarkerElement = new google.maps.marker.AdvancedMarkerElement({
-              map: this.map,
-              content: this.buildContent(property),
-              position: property.position,
-              title: property.description,
-            });
-
-            AdvancedMarkerElement.addListener("click", () => {
-              this.toggleHighlight(AdvancedMarkerElement, property);
-            });
-          }
-        }
       });
+    },
+
+    addMapEvent() {
+      this.mapClickListener = this.onMapClick.bind(this);
+      this.map.addListener("click", this.mapClickListener);
+    },
+
+    onMapClick(event) {
+      const lat = event.latLng.lat();
+      const lng = event.latLng.lng();
+      const coord = {
+        lat,
+        lng
+      }
+      this.$emit('chosenCoords', coord);
+    },
+
+    removeMapClickListener() {
+      if (this.mapClickListener) {
+        google.maps.event.clearListeners(this.map, 'click');
+        this.mapClickListener = null;
+      }
     },
 
     showTraffic(show) {
@@ -139,6 +156,37 @@ export default {
       return content
     },
 
+    addMarkers() {
+      if (this.map && this.showCameras) {
+        for (const property of this.cameraLocations) {
+          console.log(property.coords)
+          const AdvancedMarkerElement = new google.maps.marker.AdvancedMarkerElement({
+            map: this.map,
+            content: this.buildContent(property),
+            position: {
+              lat: parseFloat(property.coords.lat),
+              lng: parseFloat(property.coords.lng)
+            },
+            title: property.camera_id
+          });
+
+          AdvancedMarkerElement.addListener("click", () => {
+            this.toggleHighlight(AdvancedMarkerElement, property);
+          });
+
+          this.markers.push(AdvancedMarkerElement);
+        }
+      }
+    },
+
+    removeMarkers() {
+      if (this.markers.length > 0) {
+        this.markers.forEach((marker) => {
+          marker.setMap(null);
+        });
+        this.markers = [];
+      }
+    },
 
   },
   watch: {
@@ -147,18 +195,18 @@ export default {
     },
     showCameras(newVal) {
       if (newVal) {
-        this.loadMap();
+        this.addMarkers();
       } else {
-        console.log(this.map)
-        this.loadMap()
-        // this.markers.map((marker) => toRaw(marker).setMap(null))
-        // Remove existing markers when showCameras is set to false
-        // if (this.map && this.map.markers) {
-        //   console.log('ere')
-        //   this.markers.map((marker) => toRaw(marker).setMap(null))
-        // }
+        this.removeMarkers();
       }
     },
+    activeTab(newVal) {
+      if(newVal == 'cctv') {
+        this.addMapEvent();
+      } else {
+        this.removeMapClickListener()
+      }
+    }
   }
 
 }

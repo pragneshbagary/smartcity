@@ -3,7 +3,7 @@
       <ul class="navbar-menu">
         <li @click="selectOption('traffic')">Traffic</li>
         <li @click="selectOption('cctv')">CCTVs</li>
-        <li @click="selectOption('drones')">Drones</li>
+        <li @click="selectOption('drones')">Manage CCTVs</li>
       </ul>
     </div>
   </template>
