@@ -20,48 +20,59 @@
 					<input type="checkbox" id="drones" v-model="drones">
 					<span class="slider round"></span>
 				</label>
-				<span class="label-text">Drones</span>
+				<span class="label-text">IOT</span>
 			</div>
 		</div>
 		<div v-if="showAddCctvPanel" class="add-cctv-panel">
 			<div>
 				Click on the map to choose a point to add new cameras.
+				<br><br>
 			</div>
 			<div class="d-flex column">
 				<div>
-					<div>
-						Latitude
-					</div>
-					<input type="text" class="add-cctv" v-model="addCctv.lat">
-				</div>
-				<div>
-					<div>
-						Longitude
-					</div>
-					<input type="text" class="add-cctv" v-model="addCctv.lng">
-				</div>
-				<div>
-					<button @click="addCameras()">Add Camera</button>
-				</div>
+    <div>
+        Latitude
+    </div>
+    <input type="text" class="textbox add-cctv" v-model="addCctv.lat">
+</div>
+<div>
+    <div>
+        Longitude
+    </div>
+    <input type="text" class="textbox add-cctv" v-model="addCctv.lng">
+</div>
+<div>
+    <button class="button" @click="addCameras()">Add Camera</button>
+</div>
 			</div>
 		</div>
 		<div v-if="showDronePanel" class="drone-panel">
-			Manage CCTVs
-			<div v-if="cameraLocations.length > 0">
-				<div v-for="(data, index) in cameraLocations" :key="index">
-					<div>
-						<div>
-							lat: {{ data.coords.lat }}
-							lng: {{ data.coords.lng }}
-						</div>
-						<div>
-							<button @click="deleteCamera(data)">Delete</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+            <div>Manage CCTVs</div>
+            <div v-if="cameraLocations.length > 0">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Camera ID</th>
+                            <th>Latitude</th>
+                            <th>Longitude</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(data, index) in cameraLocations" :key="index">
+                            <td>{{ data.id }}</td>
+                            <td>{{ data.coords.lat }}</td>
+                            <td>{{ data.coords.lng }}</td>
+                            <td><button @click="deleteCamera(data)"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div v-else>
+                No cameras available.
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -122,6 +133,7 @@ export default {
 			const coords = {
 				lat: this.addCctv.lat,
 				lng: this.addCctv.lng
+				
 			}
 			api({
 				url: `/cameras`,
@@ -130,11 +142,17 @@ export default {
 					"coords": coords,
 				}
 			})
-				.then(response => {
-					const responseData = response;
-					console.log(responseData);
-				})
-				.catch(e => console.log(e));
+			.then(response => {
+        // Displaying the alert after the server has successfully added the camera
+        window.alert('The camera has been added.');
+        console.log(response.data);
+        this.getMarkers();  // Refreshing the camera markers on the map
+    })
+    .catch(e => {
+        console.error(e);
+        window.alert('Failed to add the camera.'); // Providing feedback on failure
+    });
+
 		},
 
 		deleteCamera(data) {
@@ -173,6 +191,31 @@ export default {
 </script>
 
 <style scoped>
+
+.button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.textbox {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
 .right-panel {
 	display: flex;
 	flex-direction: column;
@@ -180,7 +223,7 @@ export default {
 	border-left: 1px solid #ddd;
 	background-color: #f8f9fa;
 	/* height: 100vh; */
-	width: 8%;
+	width: 15%;
 }
 
 .toggle {
@@ -241,4 +284,22 @@ input:focus+.slider {
 input:checked+.slider:before {
 	transform: translateX(26px);
 }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
 </style>

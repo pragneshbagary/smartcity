@@ -149,7 +149,7 @@ export default {
       content.classList.add("property");
       content.innerHTML = `
       <div class="marker-container">
-        <img src="https://placehold.co/600x400" alt="Camera Icon" class="marker-icon" />
+        <img src="${cameraImage}" alt="Camera Icon" class="marker-icon" />
       </div>
       `;
 
