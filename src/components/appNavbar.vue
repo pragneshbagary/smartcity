@@ -4,6 +4,8 @@
         <li @click="selectOption('traffic')">Traffic</li>
         <li @click="selectOption('cctv')">CCTVs</li>
         <li @click="selectOption('drones')">Manage CCTVs</li>
+        <li @click="selectOption('drones')">IOT</li>
+        <li @click="selectOption('drones')">Manage IOT Station</li>
       </ul>
     </div>
   </template>
