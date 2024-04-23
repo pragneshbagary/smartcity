@@ -46,6 +46,32 @@
 </div>
 			</div>
 		</div>
+		
+		<!-- Add IOT panel, shown when showAddIotPanel is true -->
+		<div v-if="showAddIotPanel" class="add-iot-panel">
+      <div>
+        Click on the map to choose a point to add new IoT devices.
+        <br><br>
+      </div>
+      <div class="d-flex column">
+        <div>
+          <div>
+            Latitude
+          </div>
+          <input type="text" class="textbox add-iot" v-model="addIot.lat">
+        </div>
+        <div>
+          <div>
+            Longitude
+          </div>
+          <input type="text" class="textbox add-iot" v-model="addIot.lng">
+        </div>
+        <div>
+          <button class="button" @click="addIotDevice()">Add IoT Device</button>
+        </div>
+      </div>
+    </div>
+
 		<div v-if="showDronePanel" class="drone-panel">
             <div>Manage CCTVs</div>
             <div v-if="cameraLocations.length > 0">
@@ -91,7 +117,13 @@ export default {
 				lat: "",
 				lng: ""
 			},
-			cameraLocations: ""
+			
+			cameraLocations: "",
+      showAddIotPanel: false, // New data property for the IOT panel
+      addIot: {
+        lat: "",
+        lng: ""
+     		 },
 		}
 	},
 	mounted() {
@@ -114,6 +146,15 @@ export default {
 				this.showCctvPanel = false;
 				this.showAddCctvPanel = false;
 			}
+
+			// Condition to show the Add IOT panel
+			if (this.activeTab === 'iot') {
+        this.showAddIotPanel = true;
+        this.showAddCctvPanel = false;
+        this.showDronePanel = false;
+      	} else {
+        this.showAddIotPanel = false;
+      		}	
 		},
 
 		getMarkers() {
@@ -166,7 +207,30 @@ export default {
 					this.getMarkers()
 				})
 				.catch(e => console.log(e));
-		}
+		},
+
+		addIotDevice() {
+  const iotCoords = {
+    lat: this.addIot.lat,
+    lng: this.addIot.lng
+  }
+  api({
+    url: `/iot-devices`,
+    method: "post",
+    data: {
+      "coords": iotCoords,
+    }
+  })
+  .then(response => {
+    window.alert('IoT device added successfully.');
+    console.log(response.data);
+    // Optionally, refresh the list of devices if needed
+  })
+  .catch(e => {
+    console.error(e);
+    window.alert('Failed to add IoT device.');
+  });
+},
 	},
 	watch: {
 		traffic(newVal) {
@@ -186,6 +250,8 @@ export default {
 		coords(newVal) {
 			this.addCctv = newVal;
 		}
+
+		
 	}
 }
 </script>

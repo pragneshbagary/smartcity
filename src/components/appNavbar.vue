@@ -4,8 +4,8 @@
         <li @click="selectOption('traffic')">Traffic</li>
         <li @click="selectOption('cctv')">CCTVs</li>
         <li @click="selectOption('drones')">Manage CCTVs</li>
-        <li @click="selectOption('drones')">IOT</li>
-        <li @click="selectOption('drones')">Manage IOT Station</li>
+        <li @click="selectOption('iot')">IOT</li>
+        <li @click="selectOption('iot-station')">Manage IOT Station</li>
       </ul>
     </div>
   </template>
@@ -16,9 +16,16 @@
       selectOption(option) {
         // Emit an event with the selected option which can be handled by the parent component
         this.$emit('option-selected', option);
+      },
+      handleOptionSelected(option) {
+      if (option === 'iot') {
+        this.showAddIotPanel = true;
+      } else {
+        this.showAddIotPanel = false;
       }
     }
   }
+};
   </script>
   
   <style scoped>
