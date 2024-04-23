@@ -201,7 +201,8 @@ export default {
       }
     },
     activeTab(newVal) {
-      if(newVal == 'cctv') {
+      console.log(newVal, 'iot');
+      if(newVal == 'cctv' || newVal == 'iot') {
         this.addMapEvent();
       } else {
         this.removeMapClickListener()

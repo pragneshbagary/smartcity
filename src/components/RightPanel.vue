@@ -30,75 +30,78 @@
 			</div>
 			<div class="d-flex column">
 				<div>
-    <div>
-        Latitude
-    </div>
-    <input type="text" class="textbox add-cctv" v-model="addCctv.lat">
-</div>
-<div>
-    <div>
-        Longitude
-    </div>
-    <input type="text" class="textbox add-cctv" v-model="addCctv.lng">
-</div>
-<div>
-    <button class="button" @click="addCameras()">Add Camera</button>
-</div>
+					<div>
+						Latitude
+					</div>
+					<input type="text" class="textbox add-cctv" v-model="addCctv.lat">
+				</div>
+				<div>
+					<div>
+						Longitude
+					</div>
+					<input type="text" class="textbox add-cctv" v-model="addCctv.lng">
+				</div>
+				<div>
+					<button class="button" @click="addCameras()">Add Camera</button>
+				</div>
 			</div>
 		</div>
-		
+
 		<!-- Add IOT panel, shown when showAddIotPanel is true -->
 		<div v-if="showAddIotPanel" class="add-iot-panel">
-      <div>
-        Click on the map to choose a point to add new IoT devices.
-        <br><br>
-      </div>
-      <div class="d-flex column">
-        <div>
-          <div>
-            Latitude
-          </div>
-          <input type="text" class="textbox add-iot" v-model="addIot.lat">
-        </div>
-        <div>
-          <div>
-            Longitude
-          </div>
-          <input type="text" class="textbox add-iot" v-model="addIot.lng">
-        </div>
-        <div>
-          <button class="button" @click="addIotDevice()">Add IoT Device</button>
-        </div>
-      </div>
-    </div>
+			<div>
+				Click on the map to choose a point to add new IoT devices.
+				<br><br>
+			</div>
+			<div class="d-flex column">
+				<div>
+					<div>
+						Latitude
+					</div>
+					<input type="text" class="textbox add-iot" v-model="addIot.lat">
+				</div>
+				<div>
+					<div>
+						Longitude
+					</div>
+					<input type="text" class="textbox add-iot" v-model="addIot.lng">
+				</div>
+				<div>
+					<button class="button" @click="addIotDevice()">Add IoT Device</button>
+				</div>
+			</div>
+		</div>
 
 		<div v-if="showDronePanel" class="drone-panel">
-            <div>Manage CCTVs</div>
-            <div v-if="cameraLocations.length > 0">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Camera ID</th>
-                            <th>Latitude</th>
-                            <th>Longitude</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(data, index) in cameraLocations" :key="index">
-                            <td>{{ data.id }}</td>
-                            <td>{{ data.coords.lat }}</td>
-                            <td>{{ data.coords.lng }}</td>
-                            <td><button @click="deleteCamera(data)"><i class="fa fa-trash"></i></button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div v-else>
-                No cameras available.
-            </div>
-        </div>
-    </div>
+			<div>Manage CCTVs</div>
+			<div v-if="cameraLocations.length > 0">
+				<table>
+					<thead>
+						<tr>
+							<th>Camera ID</th>
+							<th>Latitude</th>
+							<th>Longitude</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(data, index) in cameraLocations" :key="index">
+							<td>{{ data.id }}</td>
+							<td>{{ data.coords.lat }}</td>
+							<td>{{ data.coords.lng }}</td>
+							<td><button @click="deleteCamera(data)"><i class="fa fa-trash"></i></button></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div v-else>
+				No cameras available.
+			</div>
+		</div>
+		<div v-if="showIotStationPanel">
+			IOT Station
+		</div>
+	</div>
 </template>
 
 <script>
@@ -113,17 +116,18 @@ export default {
 			showCctvPanel: false,
 			showAddCctvPanel: false,
 			showDronePanel: false,
+			showIotStationPanel: false,
 			addCctv: {
 				lat: "",
 				lng: ""
 			},
-			
+
 			cameraLocations: "",
-      showAddIotPanel: false, // New data property for the IOT panel
-      addIot: {
-        lat: "",
-        lng: ""
-     		 },
+			showAddIotPanel: false, // New data property for the IOT panel
+			addIot: {
+				lat: "",
+				lng: ""
+			},
 		}
 	},
 	mounted() {
@@ -136,25 +140,42 @@ export default {
 				this.showCctvPanel = true;
 				this.showAddCctvPanel = false;
 				this.showDronePanel = false;
+				this.showAddIotPanel = false;
+				this.showIotStationPanel = false;
 			} else if (this.activeTab === 'cctv') {
 				this.showCctvPanel = false;
 				this.showAddCctvPanel = true;
 				this.showDronePanel = false;
-
+				this.showAddIotPanel = false;
+				this.showIotStationPanel = false;
 			} else if (this.activeTab === 'drones') {
 				this.showDronePanel = true;
 				this.showCctvPanel = false;
 				this.showAddCctvPanel = false;
+				this.showAddIotPanel = false;
+				this.showIotStationPanel = false;
+			} else if(this.activeTab === 'iot') {
+				this.showAddIotPanel = true;
+				this.showDronePanel = false;
+				this.showCctvPanel = false;
+				this.showAddCctvPanel = false;
+				this.showIotStationPanel = false;
+			} else if(this.activeTab === 'iot-station') {
+				this.showAddIotPanel = false;
+				this.showDronePanel = false;
+				this.showCctvPanel = false;
+				this.showAddCctvPanel = false;
+				this.showIotStationPanel = true;
 			}
 
 			// Condition to show the Add IOT panel
-			if (this.activeTab === 'iot') {
-        this.showAddIotPanel = true;
-        this.showAddCctvPanel = false;
-        this.showDronePanel = false;
-      	} else {
-        this.showAddIotPanel = false;
-      		}	
+			// if (this.activeTab === 'iot') {
+			// 	this.showAddIotPanel = true;
+			// 	this.showAddCctvPanel = false;
+			// 	this.showDronePanel = false;
+			// } else {
+			// 	this.showAddIotPanel = false;
+			// }
 		},
 
 		getMarkers() {
@@ -174,7 +195,7 @@ export default {
 			const coords = {
 				lat: this.addCctv.lat,
 				lng: this.addCctv.lng
-				
+
 			}
 			api({
 				url: `/cameras`,
@@ -183,16 +204,16 @@ export default {
 					"coords": coords,
 				}
 			})
-			.then(response => {
-        // Displaying the alert after the server has successfully added the camera
-        window.alert('The camera has been added.');
-        console.log(response.data);
-        this.getMarkers();  // Refreshing the camera markers on the map
-    })
-    .catch(e => {
-        console.error(e);
-        window.alert('Failed to add the camera.'); // Providing feedback on failure
-    });
+				.then(response => {
+					// Displaying the alert after the server has successfully added the camera
+					window.alert('The camera has been added.');
+					console.log(response.data);
+					this.getMarkers();  // Refreshing the camera markers on the map
+				})
+				.catch(e => {
+					console.error(e);
+					window.alert('Failed to add the camera.'); // Providing feedback on failure
+				});
 
 		},
 
@@ -210,27 +231,27 @@ export default {
 		},
 
 		addIotDevice() {
-  const iotCoords = {
-    lat: this.addIot.lat,
-    lng: this.addIot.lng
-  }
-  api({
-    url: `/iot-devices`,
-    method: "post",
-    data: {
-      "coords": iotCoords,
-    }
-  })
-  .then(response => {
-    window.alert('IoT device added successfully.');
-    console.log(response.data);
-    // Optionally, refresh the list of devices if needed
-  })
-  .catch(e => {
-    console.error(e);
-    window.alert('Failed to add IoT device.');
-  });
-},
+			const iotCoords = {
+				lat: this.addIot.lat,
+				lng: this.addIot.lng
+			}
+			api({
+				url: `/iot-devices`,
+				method: "post",
+				data: {
+					"coords": iotCoords,
+				}
+			})
+				.then(response => {
+					window.alert('IoT device added successfully.');
+					console.log(response.data);
+					// Optionally, refresh the list of devices if needed
+				})
+				.catch(e => {
+					console.error(e);
+					window.alert('Failed to add IoT device.');
+				});
+		},
 	},
 	watch: {
 		traffic(newVal) {
@@ -249,37 +270,38 @@ export default {
 		},
 		coords(newVal) {
 			this.addCctv = newVal;
+			this.addIot = newVal;
 		}
 
-		
+
 	}
 }
 </script>
 
 <style scoped>
-
 .button {
-    background-color: #4CAF50; /* Green */
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 4px;
+	background-color: #4CAF50;
+	/* Green */
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	margin: 4px 2px;
+	cursor: pointer;
+	border-radius: 4px;
 }
 
 .textbox {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
+	width: 100%;
+	padding: 12px 20px;
+	margin: 8px 0;
+	display: inline-block;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
 }
 
 .right-panel {
@@ -352,20 +374,20 @@ input:checked+.slider:before {
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 10px;
 }
 
-th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
+th,
+td {
+	border: 1px solid #ddd;
+	padding: 8px;
+	text-align: left;
 }
 
 th {
-    background-color: #4CAF50;
-    color: white;
+	background-color: #4CAF50;
+	color: white;
 }
-
 </style>
