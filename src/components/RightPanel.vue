@@ -17,7 +17,7 @@
 			</div>
 			<div class="toggle">
 				<label class="switch">
-					<input type="checkbox" id="drones" v-model="drones">
+					<input type="checkbox" id="drones" v-model="iot">
 					<span class="slider round"></span>
 				</label>
 				<span class="label-text">IOT</span>
@@ -44,6 +44,9 @@
 				<div>
 					<button class="button" @click="addCameras()">Add Camera</button>
 				</div>
+			</div>
+			<div v-if="showCameraMessage.length > 0">
+				{{ showCameraMessage }}
 			</div>
 		</div>
 
@@ -99,7 +102,30 @@
 			</div>
 		</div>
 		<div v-if="showIotStationPanel">
-			IOT Station
+			Manage IOT Station
+			<div v-if="iotLocations.length > 0">
+				<table>
+					<thead>
+						<tr>
+							<th>Camera ID</th>
+							<th>Latitude</th>
+							<th>Longitude</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(data, index) in iotLocations" :key="index">
+							<td>{{ data.IOT_ID }}</td>
+							<td>{{ data.LATITUDE }}</td>
+							<td>{{ data.LONGITUDE }}</td>
+							<td><button @click="deleteIOT(data)"><i class="fa fa-trash"></i></button></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div v-else>
+				No cameras available.
+			</div>
 		</div>
 	</div>
 </template>
@@ -113,10 +139,13 @@ export default {
 			traffic: false,
 			cctv: false,
 			drones: false,
+			iot: false,
+			iotStation: false,
 			showCctvPanel: false,
 			showAddCctvPanel: false,
 			showDronePanel: false,
 			showIotStationPanel: false,
+			showCameraMessage: '',
 			addCctv: {
 				lat: "",
 				lng: ""
@@ -128,11 +157,13 @@ export default {
 				lat: "",
 				lng: ""
 			},
+			iotLocations: '',
 		}
 	},
 	mounted() {
 		this.currentComponent();
 		this.getMarkers();
+		this.getIOTDevices();
 	},
 	methods: {
 		currentComponent() {
@@ -185,8 +216,21 @@ export default {
 			})
 				.then(response => {
 					const responseData = response.data;
-					console.log(responseData);
+					// console.log(responseData);
 					this.cameraLocations = responseData
+				})
+				.catch(e => console.log(e));
+		},
+
+		getIOTDevices() {
+			api({
+				url: `/iot`,
+				method: "get"
+			})
+				.then(response => {
+					const responseData = response.data;
+					// console.log(responseData);
+					this.iotLocations = responseData
 				})
 				.catch(e => console.log(e));
 		},
@@ -206,13 +250,18 @@ export default {
 			})
 				.then(response => {
 					// Displaying the alert after the server has successfully added the camera
-					window.alert('The camera has been added.');
-					console.log(response.data);
+					// window.alert('The camera has been added.');
+					// console.log(response.data);
+					this.addCctv.lat = '';
+					this.addCctv.lng = '';
+					this.showCameraMessage = 'Successfully Addded Camera';
 					this.getMarkers();  // Refreshing the camera markers on the map
 				})
 				.catch(e => {
 					console.error(e);
-					window.alert('Failed to add the camera.'); // Providing feedback on failure
+					this.addCctv.lat = '';
+					this.addCctv.lng = '';
+					this.showCameraMessage = 'Erro Occured, Please try again.' + e;
 				});
 
 		},
@@ -224,33 +273,43 @@ export default {
 			})
 				.then(response => {
 					const responseData = response;
-					console.log(responseData);
+					// console.log(responseData);
 					this.getMarkers()
 				})
 				.catch(e => console.log(e));
 		},
 
 		addIotDevice() {
-			const iotCoords = {
-				lat: this.addIot.lat,
-				lng: this.addIot.lng
-			}
 			api({
-				url: `/iot-devices`,
+				url: `/iot`,
 				method: "post",
 				data: {
-					"coords": iotCoords,
+					"latitude": this.addIot.lat,
+					"longitude": this.addIot.lng,
+					"district": 'San Jose'
 				}
 			})
 				.then(response => {
-					window.alert('IoT device added successfully.');
+					// window.alert('IoT device added successfully.');
 					console.log(response.data);
 					// Optionally, refresh the list of devices if needed
 				})
 				.catch(e => {
 					console.error(e);
-					window.alert('Failed to add IoT device.');
 				});
+		},
+
+		deleteIOT(data) {
+			api({
+				url: `/camera/${data.IOT_ID}`,
+				method: "delete",
+			})
+				.then(response => {
+					const responseData = response;
+					// console.log(responseData);
+					// this.getMarkers()
+				})
+				.catch(e => console.log(e));
 		},
 	},
 	watch: {
@@ -263,6 +322,13 @@ export default {
 		},
 		drones(newVal) {
 			this.$emit('toggle-drones', newVal);
+		},
+		iot(newVal) {
+			// console.log('toggle')
+			this.$emit('toggle-iot', newVal);
+		},
+		iotStation(newVal) {
+			this.$emit('toggle-iotStation', newVal);
 		},
 		activeTab(newVal) {
 			this.currentComponent()
@@ -316,6 +382,10 @@ export default {
 
 .toggle {
 	margin-bottom: 10px;
+}
+
+.cctv-panel {
+	text-align: left;
 }
 
 .label-text {
