@@ -107,7 +107,7 @@
 				<table>
 					<thead>
 						<tr>
-							<th>Camera ID</th>
+							<th>IOT ID</th>
 							<th>Latitude</th>
 							<th>Longitude</th>
 							<th>Action</th>
