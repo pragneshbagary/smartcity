@@ -27,7 +27,7 @@ export default {
         case 'drones':
           return 'MapComponent';
         default:
-          return null;
+          return 'MapComponent';
       }
     }
   },
