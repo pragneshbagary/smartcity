@@ -42,7 +42,7 @@
 					<input type="text" class="textbox add-cctv" v-model="addCctv.lng">
 				</div>
 				<div>
-					<button class="button" @click="addCameras()">Add Camera</button>
+					<button class="button" @click="addCameras()">Add CCTV</button>
 				</div>
 			</div>
 			<div v-if="showCameraMessage.length > 0">
