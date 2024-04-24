@@ -13,7 +13,7 @@
 					<input type="checkbox" id="cctv" v-model="cctv">
 					<span class="slider round"></span>
 				</label>
-				<span class="label-text">CCTVs</span>
+				<span class="label-text">CCTV</span>
 			</div>
 			<div class="toggle">
 				<label class="switch">
