@@ -89,9 +89,9 @@
 					</thead>
 					<tbody>
 						<tr v-for="(data, index) in cameraLocations" :key="index">
-							<td>{{ data.id }}</td>
-							<td>{{ data.coords.lat }}</td>
-							<td>{{ data.coords.lng }}</td>
+							<td>{{ data.camera_id.slice(0,4) }}</td>
+							<td>{{ data.coords.lat.toString().slice(0,6)+"..." }}</td>
+							<td>{{ data.coords.lng.toString().slice(0,6)+"..." }}</td>
 							<td><button @click="deleteCamera(data)"><i class="fa fa-trash"></i></button></td>
 						</tr>
 					</tbody>
@@ -155,7 +155,7 @@ export default {
 			showAddIotPanel: false, // New data property for the IOT panel
 			addIot: {
 				lat: "",
-				lng: ""
+				lng: "",
 			},
 			iotLocations: '',
 		}
@@ -286,11 +286,12 @@ export default {
 				data: {
 					"latitude": this.addIot.lat,
 					"longitude": this.addIot.lng,
-					"district": 'San Jose'
+					"district": 'San Jose',
+					"ROUTE": this.addIot.rot
 				}
 			})
 				.then(response => {
-					// window.alert('IoT device added successfully.');
+					window.alert('IoT device added successfully.');
 					console.log(response.data);
 					// Optionally, refresh the list of devices if needed
 				})
@@ -301,13 +302,13 @@ export default {
 
 		deleteIOT(data) {
 			api({
-				url: `/camera/${data.IOT_ID}`,
+				url: `/iot/${data.IOT_ID}`,
 				method: "delete",
 			})
 				.then(response => {
 					const responseData = response;
-					// console.log(responseData);
-					// this.getMarkers()
+					console.log(responseData);
+					this.getIOTDevices()
 				})
 				.catch(e => console.log(e));
 		},

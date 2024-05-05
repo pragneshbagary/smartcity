@@ -1,6 +1,6 @@
 const { getConnection } = require('./rds');
 const express = require('express');
-require('dotenv').config();
+require('dotenv').config({ path: '.env.local' });
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const AWS = require('aws-sdk');
@@ -139,38 +139,49 @@ app.get('/cameras', (req, res) => {
         }
     });
 });
-
 // Add a camera
 app.post('/cameras', (req, res) => {
     const { coords } = req.body;
     const camera_id = AWS.util.uuid.v4();
-
     const latitude = parseFloat(coords.lat);
     const longitude = parseFloat(coords.lng);
-    const video_url = "https:\/\/wzmedia.dot.ca.gov\/D4\/S101_SOF_River_Rd.stream\/playlist.m3u8"
-
+  
+    // Array of video URLs
+    const videoUrls = [
+      "https:\/\/wzmedia.dot.ca.gov\/D4\/S880_at_66th_Av.stream\/playlist.m3u8",
+      "https:\/\/wzmedia.dot.ca.gov\/D4\/W4_at_Lone_Tree_Way.stream\/playlist.m3u8",
+      "https:\/\/wzmedia.dot.ca.gov\/D4\/S680_at_N_Main_St.stream\/playlist.m3u8",
+      "https:\/\/wzmedia.dot.ca.gov\/D4\/W580_at_Tassajara_Rd.stream\/playlist.m3u8",
+      "https:\/\/wzmedia.dot.ca.gov\/D4\/N280_at_JCT_101.stream\/playlist.m3u8",
+      "https:\/\/wzmedia.dot.ca.gov\/D4\/N101_JSO_E_Hilldale_Bl.stream\/playlist.m3u8",
+      
+    ];
+  
+    // Randomly select a video URL from the array
+    const randomIndex = Math.floor(Math.random() * videoUrls.length);
+    const video_url = videoUrls[randomIndex];
+  
     const params = {
-        TableName: tableName,
-        Item: {
-            camera_id,
-            coords: {
-                lat: latitude,
-                lng: longitude,
-            },
-            video_url,
+      TableName: tableName,
+      Item: {
+        camera_id,
+        coords: {
+          lat: latitude,
+          lng: longitude,
         },
+        video_url,
+      },
     };
-
+  
     dynamodb.put(params, (err) => {
-        if (err) {
-            console.error('Error adding camera:', err);
-            res.status(500).json({ error: 'Internal server error' });
-        } else {
-            res.json({ message: 'Camera added successfully', camera_id });
-        }
+      if (err) {
+        console.error('Error adding camera:', err);
+        res.status(500).json({ error: 'Internal server error' });
+      } else {
+        res.json({ message: 'Camera added successfully', camera_id });
+      }
     });
-});
-
+  });
 
 const client2 = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client2);

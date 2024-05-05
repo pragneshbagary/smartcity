@@ -5,18 +5,18 @@
 				<!-- Traffic -->
 				Home
 			</li>
-			<li @click="selectOption('cctv')" :class="{ 'active': selectedOption === 'cctv' }">
+			<li v-if="userType=='governmentAdmin'" @click="selectOption('cctv')" :class="{ 'active': selectedOption === 'cctv' }">
 				<!-- CCTVs -->
 				Add CCTVs
 			</li>
-			<li @click="selectOption('drones')" :class="{ 'active': selectedOption === 'drones' }">
+			<li v-if="userType=='governmentAdmin'" @click="selectOption('drones')" :class="{ 'active': selectedOption === 'drones' }">
 				Manage CCTVs
 			</li>
-			<li @click="selectOption('iot')" :class="{ 'active': selectedOption === 'iot' }">
+			<li v-if="userType=='governmentAdmin'" @click="selectOption('iot')" :class="{ 'active': selectedOption === 'iot' }">
 				<!-- IOT -->
 				Add IOT
 			</li>
-			<li @click="selectOption('iot-station')" :class="{ 'active': selectedOption === 'iot-station' }">
+			<li v-if="userType=='governmentAdmin'" @click="selectOption('iot-station')" :class="{ 'active': selectedOption === 'iot-station' }">
 				Manage IOT Station
 			</li>
 		</ul>
@@ -25,6 +25,7 @@
 
 <script>
 export default {
+	props: ['userType'],
 	data() {
 		return {
 			selectedOption: 'traffic'

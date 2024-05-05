@@ -2,7 +2,7 @@
   <div id="app">
     <TopBar ref="topBar" />
     <div class="main-content" :style="mainContentStyle">
-        <appNavbar @option-selected="changeTab"/>
+        <appNavbar v-if="userType != undefined" :userType="userType" @option-selected="changeTab"/>
         <MainArea :traffic="showTrafficValue" :showCameras="showCamerasValue" :showIOT="showIOTValue" :activeTab="activeTab" @emitChosenCoords="setChosenCoords"/>
         <RightPanel :coords="currentChosenCoords" :activeTab="activeTab" @toggle-traffic="toggleTraffic" @toggle-cctv="toggleCCTV" @toggle-iot="toggleIOT"/>
     </div>
@@ -31,6 +31,7 @@ export default {
       showCamerasValue: false,
       showIOTValue: false,
       currentChosenCoords: "",
+      userType: "",
     }
   },
   computed: {
@@ -45,6 +46,7 @@ export default {
       // Get the height of the header
       this.headerHeight = this.$refs.topBar.$el.offsetHeight;
     });
+    this.userType = this.$route.params.userType;
   },
   methods: {
     changeTab(tab) {

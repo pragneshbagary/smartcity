@@ -15,8 +15,13 @@ const routes = [
     name: "signup",
     component: SignUp,
   },
+  // {
+  //   path: "/homepage",
+  //   name: "homepage",
+  //   component: HomePage,
+  // },
   {
-    path: "/homepage",
+    path: "/homepage/:userType",
     name: "homepage",
     component: HomePage,
   },

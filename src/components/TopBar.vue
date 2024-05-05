@@ -1,11 +1,11 @@
 <template>
   <div class="top-bar">
     <div class="logo-container" @click="goHome">
-      <img src="@/assets/logo.png" alt="Logo" class="logo">
+      <img src="@/assets/logotest.png" alt="Logo" class="logo">
       <span class="company-name">Smart City Traffic Platform</span>
     </div>
     <div class="user-menu">
-      <img src="@/assets/logo.png" alt="User" @click="toggleDropdown" class="user-icon">
+      <img src="@/assets/usericon.png" alt="User" @click="toggleDropdown" class="user-icon">
       <div v-if="showDropdown" class="dropdown-menu">
         <ul>
           <li @click="viewProfile">Profile</li>
@@ -39,11 +39,11 @@ methods: {
   logout() {
     // Placeholder for logout logic
     // Typically, this would clear user data and navigate to the login screen
-    this.$router.push('/login');
+    this.$router.push('/');
   },
   goHome() {
     // Navigate to the homepage
-    this.$router.push('/');
+    this.$router.push('/homepage');
   }
 }
 }

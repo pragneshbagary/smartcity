@@ -26,7 +26,7 @@
                     <input id="adminId" v-model="adminId" type="text" class="form-control" />
                 </div>
 
-                <button type="submit" class="btn btn-primary"><a href="/homepage">Login</a></button>
+                <button type="submit" class="btn btn-primary" @click="navigateToHomepage">Login</button>
             </form>
             <p>New user? <a href="/signup">Sign up here</a></p>
         </div>
@@ -54,6 +54,10 @@ export default {
             //     adminId: this.userType === 'governmentAdmin' ? this.adminId : undefined,
             // });
             // Redirect or show a message based on the response
+        },
+        navigateToHomepage() {
+      // Assuming you have the UserType ID stored in a variable called `userTypeId`
+         this.$router.push({ name: 'homepage', params: { userType: this.userType } });
         },
     },
 };
