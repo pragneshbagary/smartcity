@@ -2,7 +2,7 @@
   <div class="top-bar">
     <div class="logo-container" @click="goHome">
       <img src="@/assets/logotest.png" alt="Logo" class="logo">
-      <span class="company-name">Smart City Traffic Platform</span>
+      <span class="company-name">TracSmart - Smart City Traffic Platform</span>
     </div>
     <div class="user-menu">
       <img src="@/assets/usericon.png" alt="User" @click="toggleDropdown" class="user-icon">
